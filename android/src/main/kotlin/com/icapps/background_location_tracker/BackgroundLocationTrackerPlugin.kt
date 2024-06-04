@@ -56,7 +56,8 @@ class BackgroundLocationTrackerPlugin : FlutterPlugin, MethodCallHandler, Activi
 
     companion object {
         private const val TAG = "FBLTPlugin"
-        private const val FOREGROUND_CHANNEL_NAME = "com.icapps.background_location_tracker/foreground_channel"
+        private const val FOREGROUND_CHANNEL_NAME =
+            "com.icapps.background_location_tracker/foreground_channel"
 
         var pluginRegistryCallback: PluginRegistry.PluginRegistrantCallback? = null
 
@@ -85,7 +86,10 @@ class BackgroundLocationTrackerPlugin : FlutterPlugin, MethodCallHandler, Activi
             val lifecycle: Lifecycle = if (activity is LifecycleOwner) {
                 (activity as LifecycleOwner).lifecycle
             } else {
-                Logger.debug(TAG, "Your activity has not implemented a lifecycle owner. We will create one for you.")
+                Logger.debug(
+                    TAG,
+                    "Your activity has not implemented a lifecycle owner. We will create one for you."
+                )
                 @Suppress("DEPRECATION")
                 ProxyLifecycleProvider(activity).lifecycle
             }
@@ -111,8 +115,9 @@ class BackgroundLocationTrackerPlugin : FlutterPlugin, MethodCallHandler, Activi
     }
 
     @Deprecated(message = "Use the Android v2 embedding method.")
-    private class ProxyLifecycleProvider internal constructor(activity: Activity) : Application.ActivityLifecycleCallbacks, LifecycleOwner {
-        private val lifecycle = LifecycleRegistry(this)
+    private class ProxyLifecycleProvider internal constructor(activity: Activity) :
+        Application.ActivityLifecycleCallbacks, LifecycleOwner {
+        override val lifecycle = LifecycleRegistry(this)
         private val registrarActivityHashCode: Int = activity.hashCode()
 
         init {
@@ -163,7 +168,5 @@ class BackgroundLocationTrackerPlugin : FlutterPlugin, MethodCallHandler, Activi
             activity.application.unregisterActivityLifecycleCallbacks(this)
             lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
         }
-
-        override fun getLifecycle(): Lifecycle = lifecycle
     }
 }
