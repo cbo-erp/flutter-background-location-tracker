@@ -8,7 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 @pragma('vm:entry-point')
 void backgroundCallback() {
   BackgroundLocationTrackerManager.handleBackgroundUpdated(
-    (data) async => Repo().update(data),
+    (data) => LocationDao().saveLocation(data),
   );
 }
 
@@ -185,35 +185,21 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class Repo {
-  static Repo? _instance;
-
-  Repo._();
-
-  factory Repo() => _instance ??= Repo._();
-
-  Future<void> update(BackgroundLocationUpdateData data) async {
-    final text = 'Location Update: Lat: ${data.lat} Lon: ${data.lon}';
-    print(text); // ignore: avoid_print
-    await LocationDao().saveLocation(data);
-  }
-}
-
 class LocationDao {
   static const _locationsKey = 'background_updated_locations';
   static const _locationSeparator = '-/-/-/';
 
   static LocationDao? _instance;
+  static List<String> locationsMain = [];
 
   LocationDao._();
 
   factory LocationDao() => _instance ??= LocationDao._();
 
   Future<void> saveLocation(BackgroundLocationUpdateData data) async {
-    final locations = await getLocations();
-    locations.add(
+    locationsMain.add(
         '${DateTime.now().toIso8601String()}       ${data.lat},${data.lon}');
-    // await (await prefs).setString(_locationsKey, locations.join(_locationSeparator));
+    print("saved ${locationsMain.length}");
   }
 
   Future<List<String>> getLocations() async {
@@ -222,7 +208,7 @@ class LocationDao {
     // final locationsString = prefs.getString(_locationsKey);
     // if (locationsString == null) return [];
     // return locationsString.split(_locationSeparator);
-    return [];
+    return locationsMain;
   }
 
   // Future<void> clear() async => (await prefs).clear();

@@ -36,7 +36,8 @@ internal object NotificationUtil {
      */
     fun createNotificationChannels(context: Context, channelName: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_LOW)
+            val channel =
+                NotificationChannel(CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_LOW)
             channel.enableVibration(false)
             channel.setSound(null, null)
             context.notificationManager().createNotificationChannel(channel)
@@ -46,6 +47,7 @@ internal object NotificationUtil {
     /**
      * Returns the [NotificationCompat] used as part of the foreground service.
      */
+
     private fun getNotification(context: Context, location: Location?): Notification {
         val intent = Intent(context, LocationUpdatesService::class.java)
         intent.putExtra(LocationUpdatesService.EXTRA_STARTED_FROM_NOTIFICATION, true)
@@ -57,9 +59,19 @@ internal object NotificationUtil {
         }
 
         val clickPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PendingIntent.getActivity(context, 0, context.packageManager.getLaunchIntentForPackage(context.packageName), PendingIntent.FLAG_IMMUTABLE)
+            PendingIntent.getActivity(
+                context,
+                0,
+                context.packageManager.getLaunchIntentForPackage(context.packageName),
+                PendingIntent.FLAG_IMMUTABLE
+            )
         } else {
-            PendingIntent.getActivity(context, 0, context.packageManager.getLaunchIntentForPackage(context.packageName), 0)
+            PendingIntent.getActivity(
+                context,
+                0,
+                context.packageManager.getLaunchIntentForPackage(context.packageName),
+                0
+            )
         }
 
         val title = if (SharedPrefsUtil.isNotificationLocationUpdatesEnabled(context)) {
@@ -75,12 +87,17 @@ internal object NotificationUtil {
         }
 
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setContentTitle(title)
-                .setContentText(text)
-                .setContentIntent(clickPendingIntent)
-                .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+            .setContentTitle(title)
+            .setContentText(text)
+            .setContentIntent(clickPendingIntent)
+            .setAutoCancel(false)
+            .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
         if (SharedPrefsUtil.isCancelTrackingActionEnabled(context)) {
-            builder.addAction(0, SharedPrefsUtil.getCancelTrackingActionText(context), cancelTrackingIntent)
+            builder.addAction(
+                0,
+                SharedPrefsUtil.getCancelTrackingActionText(context),
+                cancelTrackingIntent
+            )
         }
         val savedIconName = SharedPrefsUtil.getNotificationIcon(context);
         val icon = if (savedIconName == null) {
@@ -90,24 +107,30 @@ internal object NotificationUtil {
         }
 
         builder.setOngoing(true)
-                .setPriority(NotificationCompat.PRIORITY_MAX)
-                .setSmallIcon(icon)
-                .setTicker(text)
-                .setVibrate(null)
-                .setDefaults(0)
-                .setSound(null)
-                .setWhen(System.currentTimeMillis())
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setSmallIcon(icon)
+            .setTicker(text)
+            .setVibrate(null)
+            .setDefaults(0)
+            .setSound(null)
+            .setAutoCancel(false)
+            .setWhen(System.currentTimeMillis())
         return builder.build()
     }
 
     fun showNotification(context: Context, location: Location?) {
         val notification = getNotification(context, location)
+        notification.flags = notification.flags or Notification.FLAG_ONGOING_EVENT
         context.notificationManager().notify(NOTIFICATION_ID, notification)
     }
 
     fun startForeground(service: LocationUpdatesService, location: Location?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            service.startForeground(NOTIFICATION_ID, getNotification(service, location), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION)
+            service.startForeground(
+                NOTIFICATION_ID,
+                getNotification(service, location),
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
+            )
         } else {
             service.startForeground(NOTIFICATION_ID, getNotification(service, location))
         }
