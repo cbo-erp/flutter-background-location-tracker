@@ -22,6 +22,8 @@ Future<void> main() async {
         notificationIcon: 'explore',
         trackingInterval: Duration(seconds: 4),
         distanceFilterMeters: null,
+        enableNotificationLocationUpdates: true,
+        enableCancelTrackingAction: false,
       ),
       iOSConfig: IOSConfig(
         activityType: ActivityType.FITNESS,

@@ -70,7 +70,7 @@ internal object NotificationUtil {
                 context,
                 0,
                 context.packageManager.getLaunchIntentForPackage(context.packageName),
-                0
+                PendingIntent.FLAG_IMMUTABLE
             )
         }
 
@@ -100,7 +100,7 @@ internal object NotificationUtil {
             )
         }
         val savedIconName = SharedPrefsUtil.getNotificationIcon(context);
-        val icon = if (savedIconName == null) {
+        val icon = if (savedIconName.isNullOrEmpty()) {
             context.getAppIcon()
         } else {
             context.resources.getIdentifier(savedIconName, "drawable", context.packageName)
@@ -120,19 +120,19 @@ internal object NotificationUtil {
 
     fun showNotification(context: Context, location: Location?) {
         val notification = getNotification(context, location)
-        notification.flags = notification.flags or Notification.FLAG_ONGOING_EVENT
         context.notificationManager().notify(NOTIFICATION_ID, notification)
     }
 
     fun startForeground(service: LocationUpdatesService, location: Location?) {
+        val notification = getNotification(service, location)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             service.startForeground(
                 NOTIFICATION_ID,
-                getNotification(service, location),
+                notification,
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
             )
         } else {
-            service.startForeground(NOTIFICATION_ID, getNotification(service, location))
+            service.startForeground(NOTIFICATION_ID, notification)
         }
     }
 }
