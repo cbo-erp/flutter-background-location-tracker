@@ -69,7 +69,10 @@ internal class LocationUpdatesService : Service() {
                 onNewLocation(locationResult.lastLocation)
             }
         }
-        wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "mijnmooiestraat:location_updates")
+        wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager).newWakeLock(
+            PowerManager.PARTIAL_WAKE_LOCK,
+            "mijnmooiestraat:location_updates"
+        )
         createLocationRequest()
         getLastLocation()
 
@@ -144,12 +147,12 @@ internal class LocationUpdatesService : Service() {
                 }
                 NotificationUtil.startForeground(this, location)
             }
-        } catch(e:Throwable) {
+        } catch (e: Throwable) {
             val sw = StringWriter()
             val pw = PrintWriter(sw)
             e.printStackTrace(pw)
             pw.flush()
-            Logger.error(sw.toString(),"onUnbind failed to execute");
+            Logger.error(sw.toString(), "onUnbind failed to execute");
         }
 
         return true // Ensures onRebind() is called when a client re-binds.
@@ -180,7 +183,11 @@ internal class LocationUpdatesService : Service() {
         val locationRequest = locationRequest ?: return
         val locationCallback = locationCallback ?: return
         try {
-            fusedLocationClient?.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
+            fusedLocationClient?.requestLocationUpdates(
+                locationRequest,
+                locationCallback,
+                Looper.myLooper()
+            )
         } catch (unlikely: SecurityException) {
             if (wakeLock?.isHeld == true) {
                 wakeLock?.release()
@@ -231,8 +238,13 @@ internal class LocationUpdatesService : Service() {
 
         if (serviceIsRunningInForeground(this)) {
             if (SharedPrefsUtil.isNotificationLocationUpdatesEnabled(applicationContext)) {
-                Logger.debug(TAG, "Service is running the foreground & notification updates are enabled. So we update the notification")
+                Logger.debug(
+                    TAG,
+                    "Service is running the foreground & notification updates are enabled. So we update the notification"
+                )
                 NotificationUtil.showNotification(this, location)
+            } else {
+                NotificationUtil.showNotification(this, null)
             }
             FlutterBackgroundManager.sendLocation(applicationContext, location)
         } else {
