@@ -11,6 +11,8 @@ import android.content.pm.ServiceInfo
 import android.location.Location
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
+import com.icapps.background_location_tracker.R
 import com.icapps.background_location_tracker.ext.getAppIcon
 import com.icapps.background_location_tracker.ext.getAppName
 import com.icapps.background_location_tracker.ext.notificationManager
@@ -74,21 +76,23 @@ internal object NotificationUtil {
             )
         }
 
-        val title = if (SharedPrefsUtil.isNotificationLocationUpdatesEnabled(context)) {
-            String.format("Location Update: %s", DateFormat.getDateTimeInstance().format(Date()))
-        } else {
-            context.getAppName()
-        }
+        val title: String
+        val body: String
+        if (SharedPrefsUtil.isNotificationLocationUpdatesEnabled(context) && location != null) {
+            body = "(" + location.latitude + ", " + location.longitude + ")"
+            title = String.format(
+                "Location Update: %s",
+                DateFormat.getDateTimeInstance().format(Date())
+            )
 
-        val text = if (SharedPrefsUtil.isNotificationLocationUpdatesEnabled(context)) {
-            if (location == null) "Unknown location" else "(" + location.latitude + ", " + location.longitude + ")"
         } else {
-            SharedPrefsUtil.getNotificationBody(context)
+            title = context.getAppName()
+            body = SharedPrefsUtil.getNotificationBody(context)
         }
 
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setContentTitle(title)
-            .setContentText(text)
+            .setContentText(body)
             .setContentIntent(clickPendingIntent)
             .setAutoCancel(false)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
@@ -109,7 +113,8 @@ internal object NotificationUtil {
         builder.setOngoing(true)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setSmallIcon(icon)
-            .setTicker(text)
+            .setColor(ContextCompat.getColor(context, android.R.color.white))
+            .setTicker(body)
             .setVibrate(null)
             .setDefaults(0)
             .setSound(null)
