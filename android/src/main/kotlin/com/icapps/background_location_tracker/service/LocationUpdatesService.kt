@@ -83,7 +83,7 @@ internal class LocationUpdatesService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Logger.debug(TAG, "Service started")
-        println("bg-location-service : onStartCommand ")
+        println("$TAG : onStartCommand ")
         val startedFromNotification = intent?.getBooleanExtra(
             EXTRA_STARTED_FROM_NOTIFICATION,
             false
@@ -234,7 +234,7 @@ internal class LocationUpdatesService : Service() {
 
     private fun onNewLocation(location: Location?) {
         try {
-            println("bg-location-service : onNewLocation ${location.toString()} ")
+            println("$TAG : onNewLocation ${location.toString()} ")
 
             if (location == null) return
 
@@ -242,7 +242,7 @@ internal class LocationUpdatesService : Service() {
             this.location = location
 
             if (serviceIsRunningInForeground(this)) {
-                println("bg-location: service is running : $location")
+                println("$TAG : service is running : $location")
                 if (SharedPrefsUtil.isNotificationLocationUpdatesEnabled(applicationContext)) {
                     Logger.debug(
                         TAG,
@@ -258,10 +258,10 @@ internal class LocationUpdatesService : Service() {
                 intent.putExtra(EXTRA_LOCATION, location)
                 LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
 
-                println("bg-location: service is not running : $location")
+                println("$TAG : service is not running : $location")
             }
         } catch (e: Exception) {
-            println("bg-location-error: $e")
+            println("$TAG : ->error: $e")
         }
     }
 
@@ -314,5 +314,6 @@ internal class LocationUpdatesService : Service() {
         const val ACTION_BROADCAST = "$PACKAGE_NAME.broadcast"
         const val EXTRA_LOCATION = "$PACKAGE_NAME.location"
         const val EXTRA_STARTED_FROM_NOTIFICATION = "$PACKAGE_NAME.started_from_notification"
+
     }
 }
