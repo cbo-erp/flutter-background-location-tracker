@@ -83,6 +83,7 @@ internal class LocationUpdatesService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Logger.debug(TAG, "Service started")
+        println("bg-location-service : onStartCommand ")
         val startedFromNotification = intent?.getBooleanExtra(
             EXTRA_STARTED_FROM_NOTIFICATION,
             false
@@ -233,6 +234,7 @@ internal class LocationUpdatesService : Service() {
 
     private fun onNewLocation(location: Location?) {
         try {
+            println("bg-location-service : onNewLocation ${location.toString()} ")
 
             if (location == null) return
 
@@ -269,6 +271,7 @@ internal class LocationUpdatesService : Service() {
     private fun createLocationRequest() {
         val interval = SharedPrefsUtil.trackingInterval(this)
         val distanceFilter = SharedPrefsUtil.distanceFilter(this)
+
         locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, interval)
             .setWaitForAccurateLocation(false)
             .setMinUpdateIntervalMillis(interval / 2)
