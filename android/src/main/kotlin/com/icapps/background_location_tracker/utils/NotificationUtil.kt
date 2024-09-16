@@ -10,9 +10,9 @@ import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.location.Location
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import com.icapps.background_location_tracker.R
 import com.icapps.background_location_tracker.ext.getAppIcon
 import com.icapps.background_location_tracker.ext.getAppName
 import com.icapps.background_location_tracker.ext.notificationManager
@@ -103,7 +103,8 @@ internal object NotificationUtil {
                 cancelTrackingIntent
             )
         }
-        val savedIconName = SharedPrefsUtil.getNotificationIcon(context);
+        val savedIconName = SharedPrefsUtil.getNotificationIcon(context)
+        Log.i("NotificationUtil", "saved-icon-name: $savedIconName")
         val icon = if (savedIconName.isNullOrEmpty()) {
             context.getAppIcon()
         } else {
