@@ -232,25 +232,32 @@ internal class LocationUpdatesService : Service() {
     }
 
     private fun onNewLocation(location: Location?) {
-        if (location == null) return;
-        Logger.debug(TAG, "New location: $location")
-        this.location = location
+        try {
 
-        if (serviceIsRunningInForeground(this)) {
-            if (SharedPrefsUtil.isNotificationLocationUpdatesEnabled(applicationContext)) {
-                Logger.debug(
-                    TAG,
-                    "Service is running the foreground & notification updates are enabled. So we update the notification"
-                )
-                NotificationUtil.showNotification(this, location)
+            if (location == null) return
+
+            Logger.debug(TAG, "New location: $location")
+            this.location = location
+
+
+            if (serviceIsRunningInForeground(this)) {
+                if (SharedPrefsUtil.isNotificationLocationUpdatesEnabled(applicationContext)) {
+                    Logger.debug(
+                        TAG,
+                        "Service is running the foreground & notification updates are enabled. So we update the notification"
+                    )
+                    NotificationUtil.showNotification(this, location)
+                } else {
+                    NotificationUtil.showNotification(this, null)
+                }
+                FlutterBackgroundManager.sendLocation(applicationContext, location)
             } else {
-                NotificationUtil.showNotification(this, null)
+                val intent = Intent(ACTION_BROADCAST)
+                intent.putExtra(EXTRA_LOCATION, location)
+                LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
             }
-            FlutterBackgroundManager.sendLocation(applicationContext, location)
-        } else {
-            val intent = Intent(ACTION_BROADCAST)
-            intent.putExtra(EXTRA_LOCATION, location)
-            LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
+        } catch (e: Exception) {
+            println("bg-location-error: $e")
         }
     }
 

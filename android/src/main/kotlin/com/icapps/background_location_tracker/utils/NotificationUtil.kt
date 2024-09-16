@@ -38,8 +38,7 @@ internal object NotificationUtil {
      */
     fun createNotificationChannels(context: Context, channelName: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel =
-                NotificationChannel(CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_LOW)
+            val channel = NotificationChannel(CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_LOW)
             channel.enableVibration(false)
             channel.setSound(null, null)
             context.notificationManager().createNotificationChannel(channel)
