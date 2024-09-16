@@ -105,6 +105,8 @@ internal object NotificationUtil {
         }
         val savedIconName = SharedPrefsUtil.getNotificationIcon(context)
         Log.i("NotificationUtil", "saved-icon-name: $savedIconName")
+        println("saved-icon-name: $savedIconName")
+
         val icon = if (savedIconName.isNullOrEmpty()) {
             context.getAppIcon()
         } else {
