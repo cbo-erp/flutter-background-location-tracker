@@ -239,8 +239,8 @@ internal class LocationUpdatesService : Service() {
             Logger.debug(TAG, "New location: $location")
             this.location = location
 
-
             if (serviceIsRunningInForeground(this)) {
+                println("bg-location: service is running : $location")
                 if (SharedPrefsUtil.isNotificationLocationUpdatesEnabled(applicationContext)) {
                     Logger.debug(
                         TAG,
@@ -255,6 +255,8 @@ internal class LocationUpdatesService : Service() {
                 val intent = Intent(ACTION_BROADCAST)
                 intent.putExtra(EXTRA_LOCATION, location)
                 LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
+
+                println("bg-location: service is not running : $location")
             }
         } catch (e: Exception) {
             println("bg-location-error: $e")
@@ -267,11 +269,12 @@ internal class LocationUpdatesService : Service() {
     private fun createLocationRequest() {
         val interval = SharedPrefsUtil.trackingInterval(this)
         val distanceFilter = SharedPrefsUtil.distanceFilter(this)
-        locationRequest = LocationRequest.create()
-            .setInterval(interval)
-            .setFastestInterval(interval / 2)
-            .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
-            .setSmallestDisplacement(distanceFilter)
+        locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, interval)
+            .setWaitForAccurateLocation(false)
+            .setMinUpdateIntervalMillis(interval / 2)
+            .setMaxUpdateDelayMillis(interval)
+            .setMinUpdateDistanceMeters(distanceFilter)
+            .build()
     }
 
     /**
