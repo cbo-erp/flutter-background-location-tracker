@@ -30,6 +30,7 @@ class BackgroundLocationTrackerPlugin : FlutterPlugin, MethodCallHandler, Activi
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) {

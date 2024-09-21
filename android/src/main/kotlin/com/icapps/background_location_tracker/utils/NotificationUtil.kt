@@ -38,7 +38,8 @@ internal object NotificationUtil {
      */
     fun createNotificationChannels(context: Context, channelName: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_LOW)
+            val channel =
+                NotificationChannel(CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_LOW)
             channel.enableVibration(false)
             channel.setSound(null, null)
             context.notificationManager().createNotificationChannel(channel)
@@ -95,6 +96,7 @@ internal object NotificationUtil {
             .setContentIntent(clickPendingIntent)
             .setAutoCancel(false)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+
         if (SharedPrefsUtil.isCancelTrackingActionEnabled(context)) {
             builder.addAction(
                 0,
@@ -106,15 +108,15 @@ internal object NotificationUtil {
         Log.i("NotificationUtil", "saved-icon-name: $savedIconName")
         println("saved-icon-name: $savedIconName")
 
-        val icon = if (savedIconName.isNullOrEmpty()) {
-            context.getAppIcon()
-        } else {
-            context.resources.getIdentifier(savedIconName, "drawable", context.packageName)
-        }
+//        val icon = if (savedIconName.isNullOrEmpty()) {
+//            context.getAppIcon()
+//        } else {
+//            context.resources.getIdentifier(savedIconName, "drawable", context.packageName)
+//        }
 
         builder.setOngoing(true)
             .setPriority(NotificationCompat.PRIORITY_MAX)
-            .setSmallIcon(icon)
+            .setSmallIcon(context.getAppIcon())
             .setColor(ContextCompat.getColor(context, android.R.color.white))
             .setTicker(body)
             .setVibrate(null)

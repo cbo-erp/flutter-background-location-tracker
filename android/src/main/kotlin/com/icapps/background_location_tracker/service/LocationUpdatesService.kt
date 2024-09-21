@@ -104,7 +104,22 @@ internal class LocationUpdatesService : Service() {
         changingConfiguration = true
     }
 
-    override fun onBind(intent: Intent): IBinder? {
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
+        Logger.error(TAG, "onTaskRemoved")
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        Logger.error(TAG, "onLowMemory")
+    }
+
+    override fun onTimeout(startId: Int) {
+        super.onTimeout(startId)
+        Logger.error(TAG, "onTimeout")
+    }
+
+    override fun onBind(intent: Intent): IBinder {
         // Called when a client (MainActivity in case of this sample) comes to the foreground
         // and binds with this service. The service should cease to be a foreground service
         // when that happens.

@@ -20,7 +20,7 @@ Future<void> main() async {
       loggingEnabled: true,
       androidConfig: AndroidConfig(
         notificationIcon: 'explore',
-        trackingInterval: Duration(seconds: 4),
+        trackingInterval: Duration(minutes: 5),
         distanceFilterMeters: null,
         enableNotificationLocationUpdates: true,
         enableCancelTrackingAction: false,
