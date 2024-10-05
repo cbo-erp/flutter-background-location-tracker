@@ -88,6 +88,12 @@ class _MyAppState extends State<MyApp> {
                       onPressed: _requestNotificationPermission,
                     ),
                     MaterialButton(
+                      child: const Text('Auto Start'),
+                      onPressed: () async {
+                        await BackgroundLocationTrackerManager.checkAutoStart();
+                      },
+                    ),
+                    MaterialButton(
                       child: const Text('Start Tracking'),
                       onPressed: isTracking
                           ? null

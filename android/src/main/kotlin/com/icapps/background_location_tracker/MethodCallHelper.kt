@@ -9,6 +9,8 @@ import com.icapps.background_location_tracker.ext.checkRequiredFields
 import com.icapps.background_location_tracker.flutter.FlutterBackgroundManager
 import com.icapps.background_location_tracker.service.LocationServiceConnection
 import com.icapps.background_location_tracker.service.LocationUpdateListener
+import com.icapps.background_location_tracker.utils.AutoStartHelper
+import com.icapps.background_location_tracker.utils.AutoStartHelperV2
 import com.icapps.background_location_tracker.utils.Logger
 import com.icapps.background_location_tracker.utils.NotificationUtil
 import com.icapps.background_location_tracker.utils.SharedPrefsUtil
@@ -24,6 +26,8 @@ internal class MethodCallHelper(private val ctx: Context) : MethodChannel.Method
         "isTracking" -> isTracking(ctx, call, result)
         "startTracking" -> startTracking(ctx, call, result)
         "stopTracking" -> stopTracking(ctx, call, result)
+        "checkAutoStart"-> result.success(AutoStartHelperV2.requestAutoStartPermission(ctx))
+//        "checkAutoStart"-> result.success(AutoStartHelper.getAutoStartPermission(ctx))
         else -> result.error("404", "${call.method} is not supported", null)
     }
 
@@ -100,6 +104,7 @@ internal class MethodCallHelper(private val ctx: Context) : MethodChannel.Method
                                                    enableCancelTrackingAction ?: SharedPrefsUtil.isCancelTrackingActionEnabled(ctx))
         }
         serviceConnection.service?.startTracking()
+
         result.success(true)
     }
 

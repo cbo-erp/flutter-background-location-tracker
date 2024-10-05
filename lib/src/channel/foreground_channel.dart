@@ -69,6 +69,9 @@ class ForegroundChannel {
 
   static Future<void> stopTracking() =>
       _foregroundChannel.invokeMethod('stopTracking');
+
+  static Future<dynamic> checkAutoStart() =>
+      _foregroundChannel.invokeMethod('checkAutoStart');
 }
 
 String _activityTypeString(ActivityType activityType) {

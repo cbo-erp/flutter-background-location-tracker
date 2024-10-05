@@ -9,19 +9,23 @@ typedef LocationUpdateCallback = Future<void> Function(
     BackgroundLocationUpdateData data);
 
 class BackgroundLocationTrackerManager {
-  static Future<void> initialize(Function callback,
-      {BackgroundLocationTrackerConfig? config}) {
+  static Future<void> initialize(
+    Function callback, {
+    BackgroundLocationTrackerConfig? config,
+  }) {
     final pluginConfig = config ??= const BackgroundLocationTrackerConfig();
     BackgroundLocationTrackerLogger.enableLogging = pluginConfig.loggingEnabled;
     return ForegroundChannel.initialize(callback, config: pluginConfig);
   }
 
-  static Future<bool> isTracking() async => ForegroundChannel.isTracking();
+  static Future<bool> isTracking() => ForegroundChannel.isTracking();
 
-  static Future<void> startTracking({AndroidConfig? config}) async =>
+  static Future<void> startTracking({AndroidConfig? config}) =>
       ForegroundChannel.startTracking(config: config);
 
-  static Future<void> stopTracking() async => ForegroundChannel.stopTracking();
+  static Future<void> stopTracking() => ForegroundChannel.stopTracking();
+
+  static Future<dynamic> checkAutoStart() => ForegroundChannel.checkAutoStart();
 
   static void handleBackgroundUpdated(LocationUpdateCallback callback) =>
       BackgroundChannel.handleBackgroundUpdated(callback);
