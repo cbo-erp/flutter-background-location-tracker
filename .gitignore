@@ -95,3 +95,5 @@ test/coverage_helper_test.dart
 # FVM Version Cache
 .fvm/
 /pubspec.lock
+
+/example/android/build
